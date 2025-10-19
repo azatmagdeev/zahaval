@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { ref } from 'vue'
+import { useCounterStore } from '@/stores/counter.ts'
 
 interface FooterButton {
   id: string
@@ -23,6 +24,7 @@ const switchTab = (tabId: string) => {
   activeTab.value = tabId
   // Здесь будет логика отображения контента для выбранной вкладки
   console.log('Переключено на:', tabId)
+  useCounterStore().increment()
 }
 </script>
 

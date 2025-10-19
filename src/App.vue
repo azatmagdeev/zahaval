@@ -1,24 +1,22 @@
 <script setup lang="ts">
 import GameHeader from '@/GameHeader.vue'
 import GameFooter from '@/GameFooter.vue'
+import GameMain from '@/GameMain.vue'
 </script>
 
 <template>
   <div class="app-container">
     <div class="app">
+
       <!-- ШАПКА -->
       <GameHeader />
 
       <!-- ОСНОВНОЕ ПОЛЕ -->
-      <main class="main-content">
-        <div class="content-placeholder">
-          <p>Выберите раздел в меню ниже</p>
-          <div class="placeholder-emoji">📱</div>
-        </div>
-      </main>
+     <GameMain/>
 
       <!-- ПОДВАЛ -->
       <GameFooter />
+
     </div>
   </div>
 </template>
@@ -43,31 +41,6 @@ import GameFooter from '@/GameFooter.vue'
   max-width: 500px;
 }
 
-/* ОСНОВНОЕ ПОЛЕ */
-.main-content {
-  flex: 1;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 20px;
-  overflow-y: auto;
-}
-
-.content-placeholder {
-  text-align: center;
-  color: white;
-}
-
-.content-placeholder p {
-  font-size: 16px;
-  margin-bottom: 12px;
-  opacity: 0.8;
-}
-
-.placeholder-emoji {
-  font-size: 48px;
-  opacity: 0.7;
-}
 
 /* Анимации */
 @keyframes fadeIn {

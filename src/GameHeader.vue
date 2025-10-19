@@ -20,7 +20,7 @@
       </div>
       <div class="indicator">
         <span class="indicator-label">Наличные</span>
-        <span class="indicator-value">85 000р</span>
+        <span class="indicator-value">{{ 85000 + useCounterStore().count }}р</span>
       </div>
       <div class="indicator">
         <span class="indicator-label">Кредитка</span>
@@ -30,7 +30,7 @@
   </header>
 </template>
 <script lang="ts" setup>
-
+import { useCounterStore } from '@/stores/counter.ts'
 </script>
 
 <style>
@@ -111,7 +111,6 @@
 .indicator-value.negative {
   color: #e74c3c;
 }
-
 
 @media (max-height: 600px) {
   .header {
