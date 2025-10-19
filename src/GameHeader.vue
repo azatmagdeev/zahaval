@@ -1,14 +1,25 @@
+<script lang="ts" setup>
+import { useCounterStore } from '@/stores/counter.ts'
+import { useCash } from '@/stores/cash.ts'
+
+const {cash} = useCash();
+
+</script>
+
+
 <template>
   <header class="header">
     <!-- Прогресс-бар -->
     <div class="progress-section">
-      <div class="progress-title">Общий долг: 2 845 000 руб</div>
-      <div class="progress-bar">
-        <div class="progress-fill" :style="{ width: 35 }"></div>
+      <div>
+        <progress class="progress-bar" max="100" :value="useCounterStore().count"></progress>
+
+        <div class="progress-labels">
+          <span>Прогресс {{ useCounterStore().count }}%</span>
+        </div>
       </div>
-      <div class="progress-labels">
-        <span>Начало: 3 100 000р</span>
-        <span>Цель: 0 руб!</span>
+      <div >
+        🗓️ <span class="progress-labels">Осталось:</span> 60 <span class="progress-labels">мес.</span>
       </div>
     </div>
 
@@ -20,7 +31,7 @@
       </div>
       <div class="indicator">
         <span class="indicator-label">Наличные</span>
-        <span class="indicator-value">{{ 85000 + useCounterStore().count }}р</span>
+        <span class="indicator-value">{{ cash }}р</span>
       </div>
       <div class="indicator">
         <span class="indicator-label">Кредитка</span>
@@ -29,9 +40,6 @@
     </div>
   </header>
 </template>
-<script lang="ts" setup>
-import { useCounterStore } from '@/stores/counter.ts'
-</script>
 
 <style>
 /* ШАПКА */
@@ -44,15 +52,10 @@ import { useCounterStore } from '@/stores/counter.ts'
 }
 
 .progress-section {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
   margin-bottom: 12px;
-}
-
-.progress-title {
-  font-size: 14px;
-  color: #2c3e50;
-  margin-bottom: 8px;
-  text-align: center;
-  font-weight: 600;
 }
 
 .progress-bar {
@@ -63,16 +66,9 @@ import { useCounterStore } from '@/stores/counter.ts'
   margin: 8px 0;
 }
 
-.progress-fill {
-  height: 100%;
-  background: linear-gradient(90deg, #e74c3c, #27ae60);
-  border-radius: 4px;
-  transition: width 0.3s ease;
-}
-
 .progress-labels {
-  display: flex;
-  justify-content: space-between;
+/*  display: flex;
+  justify-content: space-between;*/
   font-size: 11px;
   color: #7f8c8d;
 }
@@ -115,10 +111,6 @@ import { useCounterStore } from '@/stores/counter.ts'
 @media (max-height: 600px) {
   .header {
     padding: 8px 12px;
-  }
-
-  .progress-title {
-    font-size: 12px;
   }
 
   .indicator-label {
