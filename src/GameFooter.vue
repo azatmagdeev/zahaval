@@ -1,12 +1,14 @@
 <script setup lang="ts">
 import { ref } from 'vue'
-import { useCounterStore } from '@/stores/counter.ts'
+import { usePopup } from '@/stores/popup.ts'
 
 interface FooterButton {
   id: string
   icon: string
   text: string
 }
+
+const popup = usePopup()
 
 const footerButtons = ref<FooterButton[]>([
   { id: 'cashflow', icon: '💰', text: 'Доходы/Расходы' },
@@ -22,9 +24,7 @@ const activeTab = ref('cashflow')
 // Методы
 const switchTab = (tabId: string) => {
   activeTab.value = tabId
-  // Здесь будет логика отображения контента для выбранной вкладки
-  console.log('Переключено на:', tabId)
-  useCounterStore().increment()
+  popup.setContent(tabId)
 }
 </script>
 

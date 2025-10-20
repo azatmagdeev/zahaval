@@ -2,6 +2,7 @@
 import GameHeader from '@/GameHeader.vue'
 import GameFooter from '@/GameFooter.vue'
 import GameMain from '@/GameMain.vue'
+import GamePopup from '@/GamePopup.vue'
 </script>
 
 <template>
@@ -16,6 +17,9 @@ import GameMain from '@/GameMain.vue'
 
       <!-- ПОДВАЛ -->
       <GameFooter />
+
+      <!-- Попап -->
+      <GamePopup/>
 
     </div>
   </div>
