@@ -68,6 +68,8 @@ document.addEventListener('keydown', handleKeydown)
   background: white;
   border-radius: 12px;
   padding: 32px;
+  width: 450px;
+  height: 600px;
   max-width: 90%;
   max-height: 90%;
   overflow: auto;

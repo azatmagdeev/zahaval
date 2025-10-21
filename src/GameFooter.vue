@@ -1,30 +1,33 @@
 <script setup lang="ts">
-import { ref } from 'vue'
+import { type Component, ref } from 'vue'
 import { usePopup } from '@/stores/popup.ts'
+import AssetsAndLiabilities from '@/AssetsAndLiabilities.vue'
+import IncomeAndExpenses from '@/IncomeAndExpenses.vue'
 
 interface FooterButton {
   id: string
   icon: string
   text: string
+  content?: Component
 }
 
 const popup = usePopup()
 
 const footerButtons = ref<FooterButton[]>([
-  { id: 'cashflow', icon: '💰', text: 'Доходы/Расходы' },
-  { id: 'assets', icon: '📊', text: 'Активы/Пассивы' },
+  { id: 'cashflow', icon: '💰', text: 'Доходы/Расходы', content :IncomeAndExpenses },
+  { id: 'assets', icon: '📊', text: 'Активы/Пассивы' , content: AssetsAndLiabilities},
   { id: 'chart', icon: '📈', text: 'График' },
   { id: 'journal', icon: '📝', text: 'Журнал' },
   { id: 'settings', icon: '⚙️', text: 'Настройки' },
 ])
 
 // Реактивные данные
-const activeTab = ref('cashflow')
+const activeTab = ref(null)
 
 // Методы
-const switchTab = (tabId: string) => {
-  activeTab.value = tabId
-  popup.setContent(tabId)
+const switchTab = (button:FooterButton) => {
+  activeTab.value = button.id
+  popup.setContent(button.content || button.text)
 }
 </script>
 
@@ -35,7 +38,7 @@ const switchTab = (tabId: string) => {
       :key="button.id"
       class="footer-button"
       :class="{ active: activeTab === button.id }"
-      @click="switchTab(button.id)"
+      @click="switchTab(button)"
     >
       <span class="button-icon">{{ button.icon }}</span>
       <span class="button-text">{{ button.text }}</span>
