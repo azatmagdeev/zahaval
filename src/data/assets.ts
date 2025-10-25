@@ -1,11 +1,11 @@
-import type { Active, Passive } from '@/types/game'
+import type { Active, Passive } from '@/stores/types.ts'
 
 // Массив активов (приносят доход)
 export const actives: Active[] = [
   {
     name: 'Работа',
     worth: 0,
-    income: 150000, // 6% годовых
+    income: 150000,
     hidden: true
   },
   {

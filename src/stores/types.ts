@@ -10,8 +10,9 @@ export type Credit = {
 export type Active = {
   name: string
   worth: number //стоимость актива (цена покупки)
-  income: number //доход от актива
+  income: number | null //доход от актива
   hidden: boolean // не показывать в списке активов
+  percent?: number
 }
 
 export type Passive = {

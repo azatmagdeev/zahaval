@@ -1,25 +1,28 @@
 <script setup lang="ts">
-import { actives } from '@/data/assets.ts'
-import { passives } from '@/data/assets.ts'
-import type { Active } from '@/stores/types.ts'
+import { type Asset, type Liability, useGameStore } from '@/stores/game.ts'
+
+const game = useGameStore()
+console.log(game.assets)
+console.log(game.liabilities)
+
 </script>
 
 <template>
-  <h4>Активы</h4>
+  <h4>Активы {{game.totalAssetsValue}}</h4>
 
-  <template v-for="active in actives as Active[]" :key="active.name">
-    <div class="list-row" v-if="!active.hidden">
-      <span>{{ active.name }}</span>
-      <span>{{ active.worth }}/{{ active.income }}</span>
+  <template v-for="asset in game.assets as Asset[]" :key="asset.name">
+    <div class="list-row" v-if="!asset.hidden">
+      <span>{{ asset.name }}</span>
+      <span>{{ asset.value }}</span>
     </div>
   </template>
 
-  <h4>Пассивы</h4>
+  <h4>Пассивы {{game.totalLiabilitiesValue}}</h4>
 
-  <template v-for="passive in passives as Passive[]" :key="passive.name">
+  <template v-for="liability in game.liabilities as Liability[]" :key="liability.name">
     <div class="list-row">
-      <span>{{ passive.name }}</span>
-      <span>{{ passive.worth }}/{{ passive.cost }}</span>
+      <span>{{ liability.name }}</span>
+      <span>{{ liability.remainingAmount }}</span>
     </div>
   </template>
 </template>

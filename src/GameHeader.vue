@@ -1,8 +1,9 @@
 <script lang="ts" setup>
 import { useCounterStore } from '@/stores/counter.ts'
-import { useCash } from '@/stores/cash.ts'
+import { useGameStore } from '@/stores/game.ts'
 
-const {cash} = useCash();
+
+const game = useGameStore();
 
 </script>
 
@@ -19,7 +20,7 @@ const {cash} = useCash();
         </div>
       </div>
       <div >
-        🗓️ <span class="progress-labels">Осталось:</span> 60 <span class="progress-labels">мес.</span>
+        🗓️ <span class="progress-labels">Осталось:</span> {{game.remainingMonths}} <span class="progress-labels">мес.</span>
       </div>
     </div>
 
@@ -27,15 +28,15 @@ const {cash} = useCash();
     <div class="indicators">
       <div class="indicator">
         <span class="indicator-label">Денежный поток</span>
-        <span class="indicator-value positive">+45 000р</span>
+        <span class="indicator-value positive">{{game.cashFlow}}</span>
       </div>
       <div class="indicator">
         <span class="indicator-label">Наличные</span>
-        <span class="indicator-value">{{ cash }}р</span>
+        <span class="indicator-value">{{ game.cash }}р</span>
       </div>
       <div class="indicator">
         <span class="indicator-label">Кредитка</span>
-        <span class="indicator-value negative">-15 000р</span>
+        <span class="indicator-value negative">{{game.creditCardDebt}}</span>
       </div>
     </div>
   </header>
