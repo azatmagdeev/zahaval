@@ -1,19 +1,17 @@
 <script setup lang="ts">
 import { useGameStore } from '@/stores/game.ts'
+import type { CardAction } from '@/stores/types.ts'
 
 const game = useGameStore()
 
 const nextMove = () => {
-  if (game.currentMove % 4 === 0) {
-    console.log(game.monthlyReports)
-  }
   game.nextMove()
-  console.log(game.goalProgress)
 }
 
-// const handleAction = (action: string) => {
-//   //game.processCardAction(action)
-// }
+const handleAction = (action: CardAction) => {
+  game.processCardAction(action)
+  game.nextMove()
+}
 </script>
 
 <template>
@@ -29,10 +27,10 @@ const nextMove = () => {
 
         <div class="card-details" v-if="game.currentCard.gain || game.currentCard.cost">
           <div v-if="game.currentCard.gain" class="detail-item positive">
-            💰 +{{ game.currentCard.gain }} руб.
+            💰 +{{ game.currentCard.gain.toLocaleString() }} руб.
           </div>
           <div v-if="game.currentCard.cost" class="detail-item negative">
-            💸 -{{ game.currentCard.cost }} руб.
+            💸 -{{ game.currentCard.cost.toLocaleString() }} руб.
           </div>
         </div>
       </div>
@@ -55,10 +53,10 @@ const nextMove = () => {
 <!--        </button>-->
 
         <button
-          @click="nextMove"
+          @click="handleAction(game.currentCard.action)"
           class="btn btn-secondary"
         >
-          Пропустить
+          Продолжить
         </button>
       </div>
     </div>

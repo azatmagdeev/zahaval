@@ -1,10 +1,8 @@
 // stores/gameStore.js
 import { defineStore } from 'pinia'
 
-
 import type {
   GameState,
-  // GameStatus,
   Asset,
   Liability,
   EventCard,
@@ -12,11 +10,10 @@ import type {
   JournalEntry,
   IncomeExpenseItem,
   ChartDataPoint,
-  GameSettings,
-  // PopupType,
   CardAction,
-  Difficulty
-} from './types.ts';
+} from './types.ts'
+import { eventCards } from '@/data/eventCards.ts'
+import { initialState } from '@/data/initialGameState.ts'
 
 export const useGameStore = defineStore('game', {
   // eslint-disable-next-line @typescript-eslint/ban-ts-comment
@@ -25,67 +22,17 @@ export const useGameStore = defineStore('game', {
     gameId: 1,
     currentMonth: 1,
     currentMove: 0,
-    totalMonths: 60,
+    totalMonths: initialState.totalMonths,
     movesPerMonth: 4,
     gameStatus: 'playing',
-
-    income: 3000,
-    expenses: 2500,
-    cash: 5000,
+    cash: initialState.cash,
     creditCardDebt: 0,
-
-    financialGoal: 100000,
-    initialNetWorth: 5000,
-
-    assets: [
-      // {
-      //   id: 1,
-      //   name: 'Акции',
-      //   type: 'stock',
-      //   monthlyIncome: 100,
-      //   value: 5000,
-      //   purchasePrice: 5000,
-      //   riskLevel: 'high',
-      // },
-      // {
-      //   id: 2,
-      //   name: 'Облигации',
-      //   type: 'bonds',
-      //   monthlyIncome: 50,
-      //   value: 2000,
-      //   purchasePrice: 2000,
-      //   riskLevel: 'low',
-      // },
-    ],
-
-    liabilities: [
-      // {
-      //   id: 1,
-      //   name: 'Ипотека',
-      //   type: 'mortgage',
-      //   monthlyExpense: 800,
-      //   remainingAmount: 150000,
-      //   initialAmount: 150000,
-      //   interestRate: 7,
-      // },
-      // {
-      //   id: 2,
-      //   name: 'Автокредит',
-      //   type: 'car_loan',
-      //   monthlyExpense: 300,
-      //   remainingAmount: 20000,
-      //   initialAmount: 20000,
-      //   interestRate: 9,
-      // },
-    ],
-
+    financialGoal: initialState.financialGoal,
+    assets: initialState.assets,
+    liabilities: initialState.liabilities,
     currentCard: null,
-
     eventHistory: [],
     monthlyReports: [],
-
-    activePopup: null,
-
     settings: {
       soundEnabled: true,
       animationsEnabled: true,
@@ -95,8 +42,11 @@ export const useGameStore = defineStore('game', {
 
   //
   getters: {
+
     // Денежный поток (доходы минус расходы)
-    cashFlow: (state): number => state.income - state.expenses,
+    cashFlow: (state): number => {
+      return state.totalAssetIncome - state.totalLiabilityExpenses
+    },
 
     // Общий доход от активов
     totalAssetIncome: (state): number =>
@@ -126,12 +76,9 @@ export const useGameStore = defineStore('game', {
 
     // Прогресс к цели (от 0 до 100)
     goalProgress: (state): number => {
-
       const progress =
         ((state.netWorth - state.initialNetWorth) / (state.financialGoal - state.initialNetWorth)) *
         100
-
-
 
       return Math.max(0, Math.min(100, Math.floor(progress)))
     },
@@ -150,11 +97,6 @@ export const useGameStore = defineStore('game', {
 
     // Доходы для таблицы (базовый + от активов)
     incomeBreakdown: (state): IncomeExpenseItem[] => [
-      {
-        name: 'Основной доход',
-        amount: state.income - state.totalAssetIncome,
-        type: 'base',
-      },
       ...state.assets.map(
         (asset: Asset): IncomeExpenseItem => ({
           name: asset.name,
@@ -166,11 +108,6 @@ export const useGameStore = defineStore('game', {
 
     // Расходы для таблицы (базовые + от пассивов)
     expensesBreakdown: (state): IncomeExpenseItem[] => [
-      {
-        name: 'Основные расходы',
-        amount: state.expenses - state.totalLiabilityExpenses,
-        type: 'base',
-      },
       ...state.liabilities.map(
         (liability: Liability): IncomeExpenseItem => ({
           name: liability.name,
@@ -278,8 +215,8 @@ export const useGameStore = defineStore('game', {
       // Создание отчета за месяц
       const monthlyReport: MonthlyReport = {
         month: this.currentMonth,
-        income: this.income,
-        expenses: this.expenses,
+        income: this.totalAssetIncome,
+        expenses: this.totalLiabilityExpenses,
         cashFlow: this.cashFlow,
         cash: this.cash,
         creditCardDebt: this.creditCardDebt,
@@ -298,52 +235,7 @@ export const useGameStore = defineStore('game', {
 
     // Генерация карточки события
     generateEventCard(): void {
-      const eventTemplates: Omit<EventCard, 'cardId'>[] = [
-        {
-          id: 1,
-          type: 'investment_opportunity',
-          title: 'Инвестиция в стартап',
-          description: 'Предлагается инвестировать в перспективный стартап',
-          cost: 5000,
-          monthlyIncome: 200,
-          action: 'buy',
-        },
-        {
-          id: 2,
-          type: 'emergency_expense',
-          title: 'Неожиданные расходы',
-          description: 'Сломался холодильник, нужен ремонт',
-          cost: 300,
-          action: 'accept_expense',
-        },
-        {
-          id: 3,
-          type: 'windfall',
-          title: 'Неожиданный доход',
-          description: 'Нашли старые акции, которые выросли в цене',
-          gain: 2000,
-          action: 'accept_income',
-        },
-        {
-          id: 4,
-          type: 'loan_offer',
-          title: 'Предложение кредита',
-          description: 'Банк предлагает выгодный кредит',
-          amount: 10000,
-          monthlyExpense: 150,
-          action: 'take_loan',
-        },
-        {
-          id: 5,
-          type: 'asset_sale',
-          title: 'Предложение продажи',
-          description: 'Кто-то хочет купить ваши акции',
-          assetId: 1,
-          salePrice: 5500,
-          action: 'sell',
-        },
-      ]
-
+      const eventTemplates = eventCards
       const randomEvent = eventTemplates[Math.floor(Math.random() * eventTemplates.length)]
       this.currentCard = {
         ...randomEvent,
@@ -400,7 +292,6 @@ export const useGameStore = defineStore('game', {
 
         this.assets.push(newAsset)
         this.cash -= cardData.cost || 0
-        this.income += cardData.monthlyIncome || 0
       }
     },
 
@@ -411,8 +302,10 @@ export const useGameStore = defineStore('game', {
       const assetIndex = this.assets.findIndex((asset) => asset.id === cardData.assetId)
       if (assetIndex !== -1) {
         const asset = this.assets[assetIndex]
+        if (!asset) {
+          throw new Error('!asset')
+        }
         this.cash += cardData.salePrice || 0
-        this.income -= asset.monthlyIncome
         this.assets.splice(assetIndex, 1)
       }
     },
@@ -430,7 +323,6 @@ export const useGameStore = defineStore('game', {
 
       this.liabilities.push(newLiability)
       this.cash += cardData.amount || 0
-      this.expenses += cardData.monthlyExpense || 0
     },
 
     // Случайный доход
@@ -469,36 +361,36 @@ export const useGameStore = defineStore('game', {
     },
 
     // Обновление настроек
-    updateSettings(newSettings: Partial<GameSettings>): void {
-      this.settings = { ...this.settings, ...newSettings }
-    },
+    // updateSettings(newSettings: Partial<GameSettings>): void {
+    //   this.settings = { ...this.settings, ...newSettings }
+    // },
 
     // Начало новой игры
-    newGame(settings?: {
-      financialGoal?: number
-      totalMonths?: number
-      difficulty?: Difficulty
-    }): void {
-      this.$reset()
-      this.gameId++
-
-      if (settings?.financialGoal) {
-        this.financialGoal = settings.financialGoal
-      }
-      if (settings?.totalMonths) {
-        this.totalMonths = settings.totalMonths
-      }
-      if (settings?.difficulty) {
-        this.settings.difficulty = settings.difficulty
-      }
-
-      this.initialNetWorth = this.netWorth
-      this.generateEventCard()
-    },
+    // newGame(settings?: {
+    //   financialGoal?: number
+    //   totalMonths?: number
+    //   difficulty?: Difficulty
+    // }): void {
+    //   this.$reset()
+    //   this.gameId++
+    //
+    //   if (settings?.financialGoal) {
+    //     this.financialGoal = settings.financialGoal
+    //   }
+    //   if (settings?.totalMonths) {
+    //     this.totalMonths = settings.totalMonths
+    //   }
+    //   if (settings?.difficulty) {
+    //     this.settings.difficulty = settings.difficulty
+    //   }
+    //
+    //   this.initialNetWorth = this.netWorth
+    //   this.generateEventCard()
+    // },
 
     // Сброс игры
-    resetGame(): void {
-      this.newGame()
-    },
+    // resetGame(): void {
+    //   this.newGame()
+    // },
   },
 })

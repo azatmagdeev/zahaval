@@ -9,6 +9,7 @@ export type AssetType =
   | 'deposit'
   | 'crypto'
   | 'other'
+  | 'work'
 
 export type LiabilityType =
   | 'mortgage'
@@ -17,6 +18,7 @@ export type LiabilityType =
   | 'credit_card'
   | 'student_loan'
   | 'other'
+  | 'common'
 
 export type CardAction = 'buy' | 'sell' | 'take_loan' | 'skip' | 'accept_income' | 'accept_expense'
 
@@ -29,14 +31,6 @@ export type EventType =
   | 'market_crash'
   | 'income_change'
   | 'expense_change'
-
-export type PopupType =
-  | 'income_expenses'
-  | 'assets_liabilities'
-  | 'chart'
-  | 'journal'
-  | 'settings'
-  | null
 
 export type Difficulty = 'easy' | 'medium' | 'hard'
 
@@ -60,6 +54,7 @@ export interface Liability {
   remainingAmount: number
   initialAmount: number
   interestRate?: number
+  hidden?: boolean
 }
 
 export interface EventCard {
@@ -77,7 +72,7 @@ export interface EventCard {
   salePrice?: number
   action: CardAction
   risk?: 'low' | 'medium' | 'high'
-  timestamp?: string
+  timestamp: string
 }
 
 export interface MonthlyReport {
@@ -99,7 +94,7 @@ export interface JournalEntry {
   title: string
   description: string
   action?: CardAction
-  timestamp?: string
+  timestamp: string
 }
 
 export interface IncomeExpenseItem {
@@ -136,9 +131,6 @@ export interface GameState {
   totalMonths: number
   movesPerMonth: number
   gameStatus: GameStatus
-
-  income: number
-  expenses: number
   cash: number
   creditCardDebt: number
 
@@ -152,8 +144,6 @@ export interface GameState {
 
   eventHistory: EventCard[]
   monthlyReports: MonthlyReport[]
-
-  activePopup: PopupType
 
   settings: GameSettings
 

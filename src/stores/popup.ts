@@ -1,9 +1,9 @@
-import { ref, type VNode } from 'vue'
+import { type Component, ref, type VNode } from 'vue'
 import { defineStore } from 'pinia'
 
 export const usePopup = defineStore('popup', () => {
   const isOpen = ref(false)
-  const content = ref<Component | VNode | string>(null)
+  const content = ref<Component | VNode | string | null>(null)
 
   function open() {
     isOpen.value = true

@@ -1,30 +1,23 @@
 <script lang="ts" setup>
 import { useGameStore } from '@/stores/game.ts'
-import { computed } from 'vue'
 
-
-const game = useGameStore();
-const goalProgress = computed(()=>game.goalProgress)
-
-
-console.log(goalProgress)
-
+const game = useGameStore()
 </script>
-
 
 <template>
   <header class="header">
     <!-- Прогресс-бар -->
     <div class="progress-section">
       <div>
-        <progress class="progress-bar" max="100" :value="goalProgress"></progress>
+        <progress class="progress-bar" max="100" :value="game.goalProgress"></progress>
 
         <div class="progress-labels">
-          <span>Прогресс {{ goalProgress }}%</span>
+          <span>Прогресс {{ game.goalProgress }}%</span>
         </div>
       </div>
-      <div >
-        🗓️ <span class="progress-labels">Осталось:</span> {{game.remainingMonths}} <span class="progress-labels">мес.</span>
+      <div>
+        🗓️ <span class="progress-labels">Осталось:</span> {{ game.remainingMonths }}
+        <span class="progress-labels">мес.</span>
       </div>
     </div>
 
@@ -32,15 +25,15 @@ console.log(goalProgress)
     <div class="indicators">
       <div class="indicator">
         <span class="indicator-label">Денежный поток</span>
-        <span class="indicator-value positive">{{game.cashFlow}}</span>
+        <span class="indicator-value positive">{{ game.cashFlow.toLocaleString() }}</span>
       </div>
       <div class="indicator">
         <span class="indicator-label">Наличные</span>
-        <span class="indicator-value">{{ game.cash }}р</span>
+        <span class="indicator-value">{{ game.cash.toLocaleString() }}р</span>
       </div>
       <div class="indicator">
         <span class="indicator-label">Кредитка</span>
-        <span class="indicator-value negative">{{game.creditCardDebt}}</span>
+        <span class="indicator-value negative">{{ game.creditCardDebt.toLocaleString() }}</span>
       </div>
     </div>
   </header>
@@ -72,8 +65,6 @@ console.log(goalProgress)
 }
 
 .progress-labels {
-/*  display: flex;
-  justify-content: space-between;*/
   font-size: 11px;
   color: #7f8c8d;
 }
