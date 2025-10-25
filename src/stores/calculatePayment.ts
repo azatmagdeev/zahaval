@@ -53,21 +53,21 @@ function calculateMonthlyPayment(credit: Credit): PaymentBreakdown {
 }
 
 // Альтернативная функция, которая принимает сумму платежа и возвращает разбивку
-function calculatePaymentBreakdown(credit: Credit, paymentAmount?: number): PaymentBreakdown {
-  const monthlyRate = credit.percent / 100 / 12;
-  const totalPayment = paymentAmount || calculateMonthlyPayment(credit).totalPayment;
-
-  const interestPart = Math.min(credit.debt * monthlyRate, totalPayment);
-  const principalPart = Math.min(totalPayment - interestPart, credit.debt);
-  const remainingDebt = Math.max(0, credit.debt - principalPart);
-
-  return {
-    totalPayment: Math.round(totalPayment),
-    principalPart: Math.round(principalPart),
-    interestPart: Math.round(interestPart),
-    remainingDebt: Math.round(remainingDebt)
-  };
-}
+// function calculatePaymentBreakdown(credit: Credit, paymentAmount?: number): PaymentBreakdown {
+//   const monthlyRate = credit.percent / 100 / 12;
+//   const totalPayment = paymentAmount || calculateMonthlyPayment(credit).totalPayment;
+//
+//   const interestPart = Math.min(credit.debt * monthlyRate, totalPayment);
+//   const principalPart = Math.min(totalPayment - interestPart, credit.debt);
+//   const remainingDebt = Math.max(0, credit.debt - principalPart);
+//
+//   return {
+//     totalPayment: Math.round(totalPayment),
+//     principalPart: Math.round(principalPart),
+//     interestPart: Math.round(interestPart),
+//     remainingDebt: Math.round(remainingDebt)
+//   };
+// }
 
 // Примеры использования:
 const consumerCredit: Credit = {

@@ -1,42 +1,166 @@
-export type Credit = {
+// types/game.types.ts
+export type GameStatus = 'playing' | 'won' | 'lost'
+
+export type AssetType =
+  | 'stock'
+  | 'bonds'
+  | 'real_estate'
+  | 'business'
+  | 'deposit'
+  | 'crypto'
+  | 'other'
+
+export type LiabilityType =
+  | 'mortgage'
+  | 'car_loan'
+  | 'consumer_loan'
+  | 'credit_card'
+  | 'student_loan'
+  | 'other'
+
+export type CardAction = 'buy' | 'sell' | 'take_loan' | 'skip' | 'accept_income' | 'accept_expense'
+
+export type EventType =
+  | 'investment_opportunity'
+  | 'emergency_expense'
+  | 'windfall'
+  | 'loan_offer'
+  | 'asset_sale'
+  | 'market_crash'
+  | 'income_change'
+  | 'expense_change'
+
+export type PopupType =
+  | 'income_expenses'
+  | 'assets_liabilities'
+  | 'chart'
+  | 'journal'
+  | 'settings'
+  | null
+
+export type Difficulty = 'easy' | 'medium' | 'hard'
+
+// Интерфейсы для основных сущностей
+export interface Asset {
+  id: number
   name: string
-  debt: number //сумма долга
-  period?: number //срок в месяцах, у кредитной карты нет
-  limit?: number // для кредитной карты
-  percent: number // процент годовых
-  payment?: number // ежемесячный платеж (вычисляемое)
+  type: AssetType
+  monthlyIncome: number
+  value: number
+  purchasePrice: number
+  riskLevel?: 'low' | 'medium' | 'high'
+  hidden?: boolean
 }
 
-export type Active = {
+export interface Liability {
+  id: number
   name: string
-  worth: number //стоимость актива (цена покупки)
-  income: number | null //доход от актива
-  hidden: boolean // не показывать в списке активов
-  percent?: number
+  type: LiabilityType
+  monthlyExpense: number
+  remainingAmount: number
+  initialAmount: number
+  interestRate?: number
 }
 
-export type Passive = {
+export interface EventCard {
+  id: number
+  cardId: number
+  type: EventType
+  title: string
+  description: string
+  cost?: number
+  monthlyIncome?: number
+  gain?: number
+  amount?: number
+  monthlyExpense?: number
+  assetId?: number
+  salePrice?: number
+  action: CardAction
+  risk?: 'low' | 'medium' | 'high'
+  timestamp?: string
+}
+
+export interface MonthlyReport {
+  month: number
+  income: number
+  expenses: number
+  cashFlow: number
+  cash: number
+  creditCardDebt: number
+  netWorth: number
+  assetsValue: number
+  liabilitiesValue: number
+  timestamp: string
+}
+
+export interface JournalEntry {
+  type: 'monthly_report' | 'event'
+  month?: number
+  title: string
+  description: string
+  action?: CardAction
+  timestamp?: string
+}
+
+export interface IncomeExpenseItem {
   name: string
-  worth: number
-  cost: number
-  hidden: boolean
+  amount: number
+  type: 'base' | 'asset' | 'liability'
 }
 
-export type Income = {
-  summ: number
-  actives: Active[]
+export interface ChartDataPoint {
+  month: number
+  netWorth: number
+  goal: number
 }
 
-export type Cost = {
-  summ: number
-  passives: Passive[]
+export interface GameSettings {
+  soundEnabled: boolean
+  animationsEnabled: boolean
+  difficulty: Difficulty
 }
 
-const credit1: Credit = {
-  name: 'Автокредит',
-  period: 84,
-  percent: 14.2,
-  debt: 2500000,
-}
+// export interface GameStatistics {
+//   totalIncome: number
+//   totalExpenses: number
+//   netWorth: number
+//   assetsValue: number
+//   liabilitiesValue: number
+// }
 
-console.log(credit1)
+// State интерфейс для Pinia store
+export interface GameState {
+  gameId: number
+  currentMonth: number
+  currentMove: number
+  totalMonths: number
+  movesPerMonth: number
+  gameStatus: GameStatus
+
+  income: number
+  expenses: number
+  cash: number
+  creditCardDebt: number
+
+  financialGoal: number
+  initialNetWorth: number
+
+  assets: Asset[]
+  liabilities: Liability[]
+
+  currentCard: EventCard | null
+
+  eventHistory: EventCard[]
+  monthlyReports: MonthlyReport[]
+
+  activePopup: PopupType
+
+  settings: GameSettings
+
+  // getters
+  totalAssetsValue: number
+  totalLiabilitiesValue: number
+  netWorth: number
+  totalAssetIncome: number
+  totalLiabilityExpenses: number
+}

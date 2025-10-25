@@ -1,9 +1,13 @@
 <script lang="ts" setup>
-import { useCounterStore } from '@/stores/counter.ts'
 import { useGameStore } from '@/stores/game.ts'
+import { computed } from 'vue'
 
 
 const game = useGameStore();
+const goalProgress = computed(()=>game.goalProgress)
+
+
+console.log(goalProgress)
 
 </script>
 
@@ -13,10 +17,10 @@ const game = useGameStore();
     <!-- Прогресс-бар -->
     <div class="progress-section">
       <div>
-        <progress class="progress-bar" max="100" :value="useCounterStore().count"></progress>
+        <progress class="progress-bar" max="100" :value="goalProgress"></progress>
 
         <div class="progress-labels">
-          <span>Прогресс {{ useCounterStore().count }}%</span>
+          <span>Прогресс {{ goalProgress }}%</span>
         </div>
       </div>
       <div >
