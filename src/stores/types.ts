@@ -81,7 +81,6 @@ export interface MonthlyReport {
   expenses: number
   cashFlow: number
   cash: number
-  creditCardDebt: number
   netWorth: number
   assetsValue: number
   liabilitiesValue: number
@@ -123,6 +122,8 @@ export interface GameSettings {
 //   liabilitiesValue: number
 // }
 
+type PositiveNumber = number;
+
 // State интерфейс для Pinia store
 export interface GameState {
   gameId: number
@@ -131,8 +132,7 @@ export interface GameState {
   totalMonths: number
   movesPerMonth: number
   gameStatus: GameStatus
-  cash: number
-  creditCardDebt: number
+  cash: PositiveNumber
 
   financialGoal: number
   initialNetWorth: number
@@ -153,4 +153,5 @@ export interface GameState {
   netWorth: number
   totalAssetIncome: number
   totalLiabilityExpenses: number
+  creditCard: Liability
 }

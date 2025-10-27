@@ -12,7 +12,7 @@ export const initialState = {
       monthlyIncome: 100000,
       value: 0,
       purchasePrice: 0,
-      riskLevel: 'high',
+      //riskLevel: 'high',
       hidden: true,
     },
     // {
@@ -36,15 +36,13 @@ export const initialState = {
       interestRate: 0,
       hidden: true,
     },
-    // {
-    //   id: 2,
-    //   name: 'Автокредит',
-    //   type: 'car_loan',
-    //   monthlyExpense: 300,
-    //   remainingAmount: 20000,
-    //   initialAmount: 20000,
-    //   interestRate: 9,
-    // },
+    {
+      id: 2,
+      name: 'Кредитная карта',
+      type: 'credit_card',
+      monthlyExpense: 0,
+      remainingAmount: 0,
+      interestRate: 50
+    },
   ] as Liability[],
-
 }

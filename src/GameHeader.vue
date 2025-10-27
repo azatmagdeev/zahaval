@@ -33,7 +33,7 @@ const game = useGameStore()
       </div>
       <div class="indicator">
         <span class="indicator-label">Кредитка</span>
-        <span class="indicator-value negative">{{ game.creditCardDebt.toLocaleString() }}</span>
+        <span class="indicator-value negative">{{ game.creditCard.remainingAmount.toLocaleString() }}</span>
       </div>
     </div>
   </header>
