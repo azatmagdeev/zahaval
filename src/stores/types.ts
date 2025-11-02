@@ -52,6 +52,7 @@ export interface Liability {
   type: LiabilityType
   monthlyExpense: number
   remainingAmount: number
+  remainingMonths?: number
   initialAmount: number
   interestRate?: number
   hidden?: boolean
@@ -122,7 +123,7 @@ export interface GameSettings {
 //   liabilitiesValue: number
 // }
 
-type PositiveNumber = number;
+type PositiveNumber = number
 
 // State интерфейс для Pinia store
 export interface GameState {

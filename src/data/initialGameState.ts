@@ -3,13 +3,13 @@ import type { Asset, Liability } from '@/stores/types.ts'
 export const initialState = {
   totalMonths: 60,
   cash: 10000,
-  financialGoal: 2500000,
+  financialGoal: 0, //избавиться от долгов
   assets: [
     {
       id: 1,
       name: 'Работа',
       type: 'work',
-      monthlyIncome: 100000,
+      monthlyIncome: 150000,
       value: 0,
       purchasePrice: 0,
       //riskLevel: 'high',
@@ -30,7 +30,7 @@ export const initialState = {
       id: 1,
       name: 'Общие расходы',
       type: 'common',
-      monthlyExpense: 70000,
+      monthlyExpense: 75000,
       remainingAmount: 0,
       initialAmount: 0,
       interestRate: 0,
@@ -42,7 +42,23 @@ export const initialState = {
       type: 'credit_card',
       monthlyExpense: 0,
       remainingAmount: 0,
-      interestRate: 50
+      interestRate: 50,
     },
+    {
+      id: 3,
+      name: 'Автокредит',
+      type: 'car_loan',
+      remainingAmount: 2370000,
+      interestRate: 14.2,
+      remainingMonths: 84,
+    },
+    // {
+    //   id: 4,
+    //   name: 'Долг родне',
+    //   type: 'other',
+    //   remainingAmount: 300000,
+    //   interestRate: 0,
+    //   remainingMonths: 24,
+    // },
   ] as Liability[],
 }

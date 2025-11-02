@@ -22,7 +22,7 @@ const footerButtons = ref<FooterButton[]>([
 ])
 
 // Реактивные данные
-const activeTab = ref(null)
+const activeTab = ref('')
 
 // Методы
 const switchTab = (button:FooterButton) => {

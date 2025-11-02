@@ -1,7 +1,12 @@
 <script lang="ts" setup>
 import { useGameStore } from '@/stores/game.ts'
+import ContextPopup from '@/ContextPopup.vue'
+import { ref } from 'vue'
 
 const game = useGameStore()
+
+const isOpenCreditCardMenu = ref(false)
+
 </script>
 
 <template>
@@ -31,9 +36,10 @@ const game = useGameStore()
         <span class="indicator-label">Наличные</span>
         <span class="indicator-value">{{ game.cash.toLocaleString() }}р</span>
       </div>
-      <div class="indicator">
-        <span class="indicator-label">Кредитка</span>
+      <div class="indicator" @click="isOpenCreditCardMenu=true">
+        <span class="indicator-label">Долг по кредитке</span>
         <span class="indicator-value negative">{{ game.creditCard.remainingAmount.toLocaleString() }}</span>
+        <ContextPopup :open="isOpenCreditCardMenu"/>
       </div>
     </div>
   </header>
@@ -81,6 +87,7 @@ const game = useGameStore()
   flex-direction: column;
   align-items: center;
   flex: 1;
+  position: relative;
 }
 
 .indicator-label {

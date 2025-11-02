@@ -1,4 +1,4 @@
-import { type Component, ref, type VNode } from 'vue'
+import { type Component, ref, type VNode, markRaw } from 'vue'
 import { defineStore } from 'pinia'
 
 export const usePopup = defineStore('popup', () => {
@@ -15,7 +15,11 @@ export const usePopup = defineStore('popup', () => {
   }
 
   function setContent(newContent: Component | VNode | string) {
-    content.value = newContent
+    if (typeof newContent === 'object' && newContent !== null && 'render' in newContent) {
+      content.value = markRaw(newContent)
+    } else {
+      content.value = newContent
+    }
     isOpen.value = true
   }
 

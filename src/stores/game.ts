@@ -14,6 +14,7 @@ import type {
 } from './types.ts'
 import { eventCards } from '@/data/eventCards.ts'
 import { initialState } from '@/data/initialGameState.ts'
+import { calculateMonthlyPayment } from '@/stores/calculatePayment.ts'
 
 export const useGameStore = defineStore('game', {
   state: (): GameState =>
@@ -40,7 +41,6 @@ export const useGameStore = defineStore('game', {
 
   //
   getters: {
-
     // Кредитная карта (как один из пассивов)
     creditCard: (state): Liability => {
       return state.liabilities.find((l) => l.type === 'credit_card') || ({} as Liability)
@@ -57,10 +57,13 @@ export const useGameStore = defineStore('game', {
 
     // Общие расходы от пассивов
     totalLiabilityExpenses: (state): number =>
-      state.liabilities.reduce(
-        (sum: number, liability: Liability) => sum + liability.monthlyExpense,
-        0,
-      ),
+      state.liabilities.reduce((sum: number, liability: Liability) => {
+        if (liability.monthlyExpense === undefined) {
+          const breakDown = calculateMonthlyPayment(liability)
+          liability.monthlyExpense = breakDown.totalPayment
+        }
+        return sum + liability.monthlyExpense
+      }, 0),
 
     // Общая стоимость активов
     totalAssetsValue: (state): number =>
@@ -105,13 +108,18 @@ export const useGameStore = defineStore('game', {
 
     // Расходы для таблицы (базовые + от пассивов)
     expensesBreakdown: (state): IncomeExpenseItem[] => [
-      ...state.liabilities.map(
-        (liability: Liability): IncomeExpenseItem => ({
+      ...state.liabilities.map((liability: Liability): IncomeExpenseItem => {
+        if (liability.monthlyExpense === undefined) {
+          const breakDown = calculateMonthlyPayment(liability)
+          liability.monthlyExpense = breakDown.totalPayment
+        }
+
+        return {
           name: liability.name,
           amount: liability.monthlyExpense,
           type: 'liability',
-        }),
-      ),
+        }
+      }),
     ],
 
     // Данные для графика прогресса
@@ -371,28 +379,28 @@ export const useGameStore = defineStore('game', {
     //   this.settings = { ...this.settings, ...newSettings }
     // },
 
-    // Начало новой игры
-    // newGame(settings?: {
-    //   financialGoal?: number
-    //   totalMonths?: number
-    //   difficulty?: Difficulty
-    // }): void {
-    //   this.$reset()
-    //   this.gameId++
-    //
-    //   if (settings?.financialGoal) {
-    //     this.financialGoal = settings.financialGoal
-    //   }
-    //   if (settings?.totalMonths) {
-    //     this.totalMonths = settings.totalMonths
-    //   }
-    //   if (settings?.difficulty) {
-    //     this.settings.difficulty = settings.difficulty
-    //   }
-    //
-    //   this.initialNetWorth = this.netWorth
-    //   this.generateEventCard()
-    // },
+    //Начало новой игры
+    newGame(settings?: {
+      financialGoal?: number
+      totalMonths?: number
+      //difficulty?: Difficulty
+    }): void {
+      this.$reset()
+      this.gameId++
+
+      if (settings?.financialGoal) {
+        this.financialGoal = settings.financialGoal
+      }
+      if (settings?.totalMonths) {
+        this.totalMonths = settings.totalMonths
+      }
+      // if (settings?.difficulty) {
+      //   this.settings.difficulty = settings.difficulty
+      // }
+
+      this.initialNetWorth = this.netWorth
+      this.generateEventCard()
+    },
 
     // Сброс игры
     // resetGame(): void {

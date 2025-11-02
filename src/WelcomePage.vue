@@ -1,9 +1,12 @@
 <script setup lang="ts">
-
 import { useGameStore } from '@/stores/game.ts'
 
 const game = useGameStore()
 const startGame = () => {
+  game.newGame({
+    financialGoal: 0,
+    totalMonths: 60,
+  })
   game.nextMove()
 }
 </script>
@@ -16,8 +19,8 @@ const startGame = () => {
   <div class="goal-section">
     <div class="goal-title">🎯 Цель игры</div>
     <p class="goal-text">
-      Накопить {{game.financialGoal.toLocaleString()}} рублей
-      за {{game.totalMonths.toLocaleString()}} месяцев
+      Накопить {{ game.financialGoal.toLocaleString() }} рублей за
+      {{ game.totalMonths.toLocaleString() }} месяцев
     </p>
   </div>
 
@@ -25,7 +28,6 @@ const startGame = () => {
 </template>
 
 <style>
-
 .content-placeholder p {
   font-size: 16px;
   margin-bottom: 12px;
