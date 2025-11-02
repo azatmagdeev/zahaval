@@ -36,13 +36,12 @@ export const useGameStore = defineStore('game', {
         animationsEnabled: true,
         difficulty: 'medium',
       },
+      initialNetWorth: 0, // Будет установлена при инициализации
     }) as unknown as GameState,
 
-  //
   getters: {
-
     // наличные
-    cashAsset: (state):Asset => {
+    cashAsset: (state): Asset => {
       const cashAsset = state.assets.find(a => (a.type === 'cash'))
       if (!cashAsset) throw new Error('Нет наличных')
       return cashAsset
@@ -83,11 +82,15 @@ export const useGameStore = defineStore('game', {
     // Чистая стоимость
     netWorth: (state): number => state.cashAsset.value + state.totalAssetsValue - state.totalLiabilitiesValue,
 
-    // Прогресс к цели (от 0 до 100)
-    goalProgress: (state): number => {
-      const progress = (state.netWorth / state.financialGoal) * 100
 
-      return Math.max(0, Math.min(100, Math.floor(progress)))
+    goalProgress: (state): number => {
+      const startNetWorth = state.initialNetWorth; // Отрицательное значение (начальные долги)
+      const targetNetWorth = state.financialGoal; // 0 или положительное значение
+
+      // Текущий прогресс от начальной точки к цели
+      const progress = ((state.netWorth - startNetWorth) / (targetNetWorth - startNetWorth)) * 100;
+
+      return Math.max(0, Math.min(100, Math.floor(progress)));
     },
 
     // Оставшееся количество месяцев
@@ -135,7 +138,7 @@ export const useGameStore = defineStore('game', {
         {
           month: 0,
           netWorth: state.initialNetWorth,
-          goal: state.initialNetWorth,
+          goal: state.financialGoal, // Показываем целевую линию как константу
         },
       ]
 
@@ -143,9 +146,7 @@ export const useGameStore = defineStore('game', {
         data.push({
           month: report.month,
           netWorth: report.netWorth,
-          goal:
-            state.initialNetWorth +
-            ((state.financialGoal - state.initialNetWorth) * report.month) / state.totalMonths,
+          goal: state.financialGoal, // Целевая линия постоянна
         })
       })
 
@@ -154,10 +155,7 @@ export const useGameStore = defineStore('game', {
         data.push({
           month: state.currentMonth - 1,
           netWorth: state.netWorth,
-          goal:
-            state.initialNetWorth +
-            ((state.financialGoal - state.initialNetWorth) * (state.currentMonth - 1)) /
-              state.totalMonths,
+          goal: state.financialGoal,
         })
       }
 
@@ -198,6 +196,13 @@ export const useGameStore = defineStore('game', {
   },
 
   actions: {
+    // Инициализация игры
+    initGame(): void {
+      // Сохраняем начальную чистую стоимость для расчетов прогресса
+      this.initialNetWorth = this.netWorth;
+      this.generateEventCard();
+    },
+
     // Следующий ход
     nextMove(): void {
       if (this.gameStatus !== 'playing') return
@@ -225,6 +230,7 @@ export const useGameStore = defineStore('game', {
 
     // Завершение месяца
     endMonth(): void {
+
       // Начисление денежного потока
       this.cashAsset.value += this.cashFlow
 
@@ -362,16 +368,6 @@ export const useGameStore = defineStore('game', {
       }
     },
 
-    // // Открытие попапа
-    // openPopup(popupName: PopupType): void {
-    //   this.activePopup = popupName;
-    // },
-
-    // // Закрытие попапа
-    // closePopup(): void {
-    //   this.activePopup = null;
-    // },
-
     // Проверка окончания игры
     checkGameEnd(): void {
       if (this.isGoalAchieved) {
@@ -381,16 +377,10 @@ export const useGameStore = defineStore('game', {
       }
     },
 
-    // Обновление настроек
-    // updateSettings(newSettings: Partial<GameSettings>): void {
-    //   this.settings = { ...this.settings, ...newSettings }
-    // },
-
     //Начало новой игры
     newGame(settings?: {
       financialGoal?: number
       totalMonths?: number
-      //difficulty?: Difficulty
     }): void {
       this.$reset()
       this.gameId++
@@ -401,17 +391,9 @@ export const useGameStore = defineStore('game', {
       if (settings?.totalMonths) {
         this.totalMonths = settings.totalMonths
       }
-      // if (settings?.difficulty) {
-      //   this.settings.difficulty = settings.difficulty
-      // }
 
-      this.initialNetWorth = this.netWorth
-      this.generateEventCard()
+      // Инициализируем игру после сброса
+      this.initGame()
     },
-
-    // Сброс игры
-    // resetGame(): void {
-    //   this.newGame()
-    // },
   },
 })
