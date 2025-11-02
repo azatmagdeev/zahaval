@@ -25,7 +25,6 @@ export const useGameStore = defineStore('game', {
       totalMonths: initialState.totalMonths,
       movesPerMonth: 4,
       gameStatus: 'playing',
-      cash: initialState.cash,
       financialGoal: initialState.financialGoal,
       assets: initialState.assets,
       liabilities: initialState.liabilities,
@@ -41,6 +40,14 @@ export const useGameStore = defineStore('game', {
 
   //
   getters: {
+
+    // наличные
+    cashAsset: (state):Asset => {
+      const cashAsset = state.assets.find(a => (a.type === 'cash'))
+      if (!cashAsset) throw new Error('Нет наличных')
+      return cashAsset
+    },
+
     // Кредитная карта (как один из пассивов)
     creditCard: (state): Liability => {
       return state.liabilities.find((l) => l.type === 'credit_card') || ({} as Liability)
@@ -74,7 +81,7 @@ export const useGameStore = defineStore('game', {
       state.liabilities.reduce((sum, liability) => sum + liability.remainingAmount, 0),
 
     // Чистая стоимость
-    netWorth: (state): number => state.cash + state.totalAssetsValue - state.totalLiabilitiesValue,
+    netWorth: (state): number => state.cashAsset.value + state.totalAssetsValue - state.totalLiabilitiesValue,
 
     // Прогресс к цели (от 0 до 100)
     goalProgress: (state): number => {
@@ -219,12 +226,12 @@ export const useGameStore = defineStore('game', {
     // Завершение месяца
     endMonth(): void {
       // Начисление денежного потока
-      this.cash += this.cashFlow
+      this.cashAsset.value += this.cashFlow
 
       // Если денег не хватает - увеличиваем долг по кредитке
-      if (this.cash < 0) {
-        this.updateCreditDebt(Math.abs(this.cash))
-        this.cash = 0
+      if (this.cashAsset.value < 0) {
+        this.updateCreditDebt(Math.abs(this.cashAsset.value))
+        this.cashAsset.value = 0
       }
 
       // Создание отчета за месяц
@@ -233,7 +240,7 @@ export const useGameStore = defineStore('game', {
         income: this.totalAssetIncome,
         expenses: this.totalLiabilityExpenses,
         cashFlow: this.cashFlow,
-        cash: this.cash,
+        cash: this.cashAsset.value,
         netWorth: this.netWorth,
         assetsValue: this.totalAssetsValue,
         liabilitiesValue: this.totalLiabilitiesValue,
@@ -294,7 +301,7 @@ export const useGameStore = defineStore('game', {
 
     // Покупка актива
     buyAsset(cardData: EventCard): void {
-      if (this.cash >= (cardData.cost || 0)) {
+      if (this.cashAsset.value >= (cardData.cost || 0)) {
         const newAsset: Asset = {
           id: Date.now(),
           name: cardData.title,
@@ -305,7 +312,7 @@ export const useGameStore = defineStore('game', {
         }
 
         this.assets.push(newAsset)
-        this.cash -= cardData.cost || 0
+        this.cashAsset.value -= cardData.cost || 0
       }
     },
 
@@ -319,7 +326,7 @@ export const useGameStore = defineStore('game', {
         if (!asset) {
           throw new Error('!asset')
         }
-        this.cash += cardData.salePrice || 0
+        this.cashAsset.value += cardData.salePrice || 0
         this.assets.splice(assetIndex, 1)
       }
     },
@@ -341,16 +348,16 @@ export const useGameStore = defineStore('game', {
 
     // Случайный доход
     addRandomIncome(amount: number): void {
-      this.cash += amount
+      this.cashAsset.value += amount
     },
 
     // Случайный расход
     addRandomExpense(amount: number): void {
-      if (this.cash >= amount) {
-        this.cash -= amount
+      if (this.cashAsset.value >= amount) {
+        this.cashAsset.value -= amount
       } else {
-        const deficit = amount - this.cash
-        this.cash = 0
+        const deficit = amount - this.cashAsset.value
+        this.cashAsset.value = 0
         this.updateCreditDebt(deficit)
       }
     },

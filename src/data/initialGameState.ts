@@ -2,7 +2,6 @@ import type { Asset, Liability } from '@/stores/types.ts'
 
 export const initialState = {
   totalMonths: 60,
-  cash: 10000,
   financialGoal: 0, //избавиться от долгов
   assets: [
     {
@@ -12,8 +11,15 @@ export const initialState = {
       monthlyIncome: 150000,
       value: 0,
       purchasePrice: 0,
-      //riskLevel: 'high',
       hidden: true,
+    },
+    {
+      id: 2,
+      name: 'Наличные',
+      type: 'cash',
+      monthlyIncome: 0,
+      value: 10000,
+      purchasePrice: 0,
     },
     // {
     //   id: 2,

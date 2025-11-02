@@ -34,7 +34,7 @@ const isOpenCreditCardMenu = ref(false)
       </div>
       <div class="indicator">
         <span class="indicator-label">Наличные</span>
-        <span class="indicator-value">{{ game.cash.toLocaleString() }}р</span>
+        <span class="indicator-value">{{ game.cashAsset.value.toLocaleString() }}р</span>
       </div>
       <div class="indicator" @click="isOpenCreditCardMenu=true">
         <span class="indicator-label">Долг по кредитке</span>

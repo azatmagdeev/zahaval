@@ -2,6 +2,7 @@
 export type GameStatus = 'playing' | 'won' | 'lost'
 
 export type AssetType =
+  | 'cash'
   | 'stock'
   | 'bonds'
   | 'real_estate'
@@ -133,7 +134,6 @@ export interface GameState {
   totalMonths: number
   movesPerMonth: number
   gameStatus: GameStatus
-  cash: PositiveNumber
 
   financialGoal: number
   initialNetWorth: number
@@ -149,6 +149,7 @@ export interface GameState {
   settings: GameSettings
 
   // getters
+  cashAsset: Asset
   totalAssetsValue: number
   totalLiabilitiesValue: number
   netWorth: number
