@@ -54,17 +54,24 @@ export const initialState = {
       id: 3,
       name: 'Автокредит',
       type: 'car_loan',
-      remainingAmount: 2370000,
+      remainingAmount: 2372000,
       interestRate: 14.2,
       remainingMonths: 84,
     },
-    // {
-    //   id: 4,
-    //   name: 'Долг родне',
-    //   type: 'other',
-    //   remainingAmount: 300000,
-    //   interestRate: 0,
-    //   remainingMonths: 24,
-    // },
+    {
+      id: 4,
+      name: 'Ипотека',
+      type: 'mortgage',
+      remainingAmount: 115000,
+      interestRate: 8.64,
+      remainingMonths: 26,
+    },
+    {
+      id: 5,
+      name: 'Долг родне',
+      type: 'other',
+      remainingAmount: 300000,
+      monthlyExpense: 0
+    },
   ] as Liability[],
 }

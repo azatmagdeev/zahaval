@@ -15,7 +15,7 @@ export const eventCards:Omit<EventCard, 'cardId' | 'timestamp'>[] = [
     type: 'emergency_expense',
     title: 'Неожиданные расходы',
     description: 'Сломался холодильник, нужен ремонт',
-    cost: 30000,
+    cost: 2000,
     action: 'accept_expense',
   },
   {
@@ -23,7 +23,7 @@ export const eventCards:Omit<EventCard, 'cardId' | 'timestamp'>[] = [
     type: 'windfall',
     title: 'Неожиданный доход',
     description: 'Нашли старые акции, которые выросли в цене',
-    gain: 30000,
+    gain: 2000,
     action: 'accept_income',
   },
   // {

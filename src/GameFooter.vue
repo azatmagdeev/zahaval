@@ -16,8 +16,8 @@ const popup = usePopup()
 const footerButtons = ref<FooterButton[]>([
   { id: 'cashflow', icon: '💰', text: 'Доходы/Расходы', content :IncomeAndExpenses },
   { id: 'assets', icon: '📊', text: 'Активы/Пассивы' , content: AssetsAndLiabilities},
-  { id: 'chart', icon: '📈', text: 'График' },
-  { id: 'journal', icon: '📝', text: 'Журнал' },
+  // { id: 'chart', icon: '📈', text: 'График' },
+  // { id: 'journal', icon: '📝', text: 'Журнал' },
   { id: 'settings', icon: '⚙️', text: 'Настройки' },
 ])
 
