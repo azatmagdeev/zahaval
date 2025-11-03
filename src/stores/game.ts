@@ -230,6 +230,8 @@ export const useGameStore = defineStore('game', {
 
     // Завершение месяца
     endMonth(): void {
+      // Обработка кредитов с фиксированным сроком
+      this.processTermLoans()
 
       // Начисление денежного потока
       this.cashAsset.value += this.cashFlow
@@ -258,6 +260,35 @@ export const useGameStore = defineStore('game', {
 
       // Проверка условий окончания игры
       this.checkGameEnd()
+    },
+
+    // Обработка кредитов с фиксированным сроком
+    processTermLoans(): void {
+      for (const liability of this.liabilities) {
+
+        // Пропускаем кредитные карты (у них нет фиксированного срока)
+        if (liability.type === 'credit_card') continue
+
+        // Если у кредита есть срок и он больше 0
+        if (liability.remainingMonths && liability.remainingMonths > 0) {
+
+          // Вычисляем ежемесячный платеж
+
+          const breakDown = calculateMonthlyPayment(liability)
+          console.log(liability.name,breakDown)
+          liability.monthlyExpense = breakDown.totalPayment
+          // Уменьшаем основной долг на часть платежа, идущую в погашение основного долга
+          liability.remainingAmount = breakDown.remainingDebt
+
+          // Уменьшаем срок кредита
+          liability.remainingMonths -= 1
+
+          // Если срок кредита истек или долг полностью погашен, удаляем кредит
+          if (liability.remainingMonths <= 0 || liability.remainingAmount <= 0) {
+            this.liabilities = this.liabilities.filter(l => l !== liability)
+          }
+        }
+      }
     },
 
     // Генерация карточки события
@@ -346,6 +377,8 @@ export const useGameStore = defineStore('game', {
     //     monthlyExpense: cardData.monthlyExpense || 0,
     //     remainingAmount: cardData.amount || 0,
     //     initialAmount: cardData.amount || 0,
+    //     term: cardData.term || 0, // Добавляем срок кредита
+    //     interestRate: cardData.interestRate || 0, // Добавляем процентную ставку
     //   }
     //
     //   this.liabilities.push(newLiability)

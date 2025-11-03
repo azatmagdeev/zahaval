@@ -19,8 +19,13 @@ const game = useGameStore()
 
   <template v-for="liability in game.liabilities as Liability[]" :key="liability.name">
     <div class="list-row" v-if="!liability.hidden">
-      <span>{{ liability.name }}</span>
-      <span>{{ liability.remainingAmount.toLocaleString() }}</span>
+      <span>
+        {{ liability.name }}
+        {{ liability.remainingMonths ? `(${liability.remainingMonths})` : ''}}
+      </span>
+      <span>
+        {{ liability.remainingAmount.toLocaleString() }}
+      </span>
     </div>
   </template>
 </template>
