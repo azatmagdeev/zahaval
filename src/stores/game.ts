@@ -39,6 +39,7 @@ export const useGameStore = defineStore('game', {
         difficulty: 'medium',
       },
       initialNetWorth: 0, // Будет установлена при инициализации
+      previousCardId: null, // ID предыдущей карточки
     }) as unknown as GameState,
 
   getters: {
@@ -196,6 +197,14 @@ export const useGameStore = defineStore('game', {
           new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime(),
       )
     },
+
+    // Доступные карточки событий (кроме предыдущей)
+    availableEventCards: (state): Partial<EventCard>[] => {
+      if (state.previousCardId === null) {
+        return eventCards // Первая карточка - любая
+      }
+      return eventCards.filter((card) => card.id !== state.previousCardId)
+    },
   },
 
   actions: {
@@ -203,6 +212,8 @@ export const useGameStore = defineStore('game', {
     initGame(): void {
       // Сохраняем начальную чистую стоимость для расчетов прогресса
       this.initialNetWorth = this.netWorth
+      // Сбрасываем предыдущую карточку при начале новой игры
+      this.previousCardId = 2
       this.generateEventCard()
     },
 
@@ -295,12 +306,32 @@ export const useGameStore = defineStore('game', {
 
     // Генерация карточки события
     generateEventCard(): void {
-      const eventTemplates = eventCards
-      const randomEvent = eventTemplates[Math.floor(Math.random() * eventTemplates.length)]
+      const availableCards = this.availableEventCards
+
+      // Выбираем случайную карточку из доступных (кроме предыдущей)
+      const randomIndex = Math.floor(Math.random() * availableCards.length)
+      const selectedCard = availableCards[randomIndex]
+
+      if (!selectedCard) {
+        // Если по какой-то причине нет доступных карточек, берем любую
+        const fallbackIndex = Math.floor(Math.random() * eventCards.length)
+        const fallbackCard = eventCards[fallbackIndex]
+        if (!fallbackCard) throw new Error('не удалось подобрать карточку')
+        this.currentCard = {
+          ...fallbackCard,
+          cardId: Date.now(),
+        } as EventCard
+        this.previousCardId = fallbackCard.id
+        return
+      }
+
       this.currentCard = {
-        ...randomEvent,
+        ...selectedCard,
         cardId: Date.now(),
       } as EventCard
+
+      // Сохраняем ID текущей карточки как предыдущую для следующего хода
+      this.previousCardId = selectedCard.id
     },
 
     // Обработка действий с карточкой
@@ -369,23 +400,6 @@ export const useGameStore = defineStore('game', {
         this.assets.splice(assetIndex, 1)
       }
     },
-
-    // Взятие кредита
-    // takeLoan(cardData: EventCard): void {
-    //   const newLiability: Liability = {
-    //     id: Date.now(),
-    //     name: cardData.title,
-    //     type: 'consumer_loan',
-    //     monthlyExpense: cardData.monthlyExpense || 0,
-    //     remainingAmount: cardData.amount || 0,
-    //     initialAmount: cardData.amount || 0,
-    //     term: cardData.term || 0, // Добавляем срок кредита
-    //     interestRate: cardData.interestRate || 0, // Добавляем процентную ставку
-    //   }
-    //
-    //   this.liabilities.push(newLiability)
-    //   this.cash += cardData.amount || 0
-    // },
 
     // Случайный доход
     addRandomIncome(amount: number): void {

@@ -1,6 +1,6 @@
 import type { EventCard } from '@/stores/types.ts'
 
-export const eventCards:Omit<EventCard, 'cardId' | 'timestamp'>[] = [
+export const eventCards:Partial<EventCard>[] = [
   // {
   //   id: 1,
   //   type: 'investment_opportunity',
@@ -22,7 +22,7 @@ export const eventCards:Omit<EventCard, 'cardId' | 'timestamp'>[] = [
     id: 3,
     type: 'windfall',
     title: 'Неожиданный доход',
-    description: 'Нашли старые акции, которые выросли в цене',
+    description: 'Удалось продать пару ненужных вещей',
     gain: 2000,
     action: 'accept_income',
   },

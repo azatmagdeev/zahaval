@@ -156,4 +156,5 @@ export interface GameState {
   totalAssetIncome: number
   totalLiabilityExpenses: number
   creditCard: Liability
+  previousCardId: number | undefined
 }
