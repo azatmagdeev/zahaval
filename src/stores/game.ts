@@ -42,7 +42,7 @@ export const useGameStore = defineStore('game', {
   getters: {
     // наличные
     cashAsset: (state): Asset => {
-      const cashAsset = state.assets.find(a => (a.type === 'cash'))
+      const cashAsset = state.assets.find((a) => a.type === 'cash')
       if (!cashAsset) throw new Error('Нет наличных')
       return cashAsset
     },
@@ -80,17 +80,18 @@ export const useGameStore = defineStore('game', {
       state.liabilities.reduce((sum, liability) => sum + liability.remainingAmount, 0),
 
     // Чистая стоимость
-    netWorth: (state): number => state.cashAsset.value + state.totalAssetsValue - state.totalLiabilitiesValue,
-
+    netWorth: (state): number => {
+      return state.totalAssetsValue - state.totalLiabilitiesValue
+    },
 
     goalProgress: (state): number => {
-      const startNetWorth = state.initialNetWorth; // Отрицательное значение (начальные долги)
-      const targetNetWorth = state.financialGoal; // 0 или положительное значение
+      const startNetWorth = state.initialNetWorth // Отрицательное значение (начальные долги)
+      const targetNetWorth = state.financialGoal // 0 или положительное значение
 
       // Текущий прогресс от начальной точки к цели
-      const progress = ((state.netWorth - startNetWorth) / (targetNetWorth - startNetWorth)) * 100;
+      const progress = ((state.netWorth - startNetWorth) / (targetNetWorth - startNetWorth)) * 100
 
-      return Math.max(0, Math.min(100, Math.floor(progress)));
+      return Math.max(0, Math.min(100, Math.floor(progress)))
     },
 
     // Оставшееся количество месяцев
@@ -199,8 +200,8 @@ export const useGameStore = defineStore('game', {
     // Инициализация игры
     initGame(): void {
       // Сохраняем начальную чистую стоимость для расчетов прогресса
-      this.initialNetWorth = this.netWorth;
-      this.generateEventCard();
+      this.initialNetWorth = this.netWorth
+      this.generateEventCard()
     },
 
     // Следующий ход
@@ -265,17 +266,14 @@ export const useGameStore = defineStore('game', {
     // Обработка кредитов с фиксированным сроком
     processTermLoans(): void {
       for (const liability of this.liabilities) {
-
         // Пропускаем кредитные карты (у них нет фиксированного срока)
         if (liability.type === 'credit_card') continue
 
         // Если у кредита есть срок и он больше 0
         if (liability.remainingMonths && liability.remainingMonths > 0) {
-
           // Вычисляем ежемесячный платеж
 
           const breakDown = calculateMonthlyPayment(liability)
-          console.log(liability.name,breakDown)
           liability.monthlyExpense = breakDown.totalPayment
           // Уменьшаем основной долг на часть платежа, идущую в погашение основного долга
           liability.remainingAmount = breakDown.remainingDebt
@@ -285,7 +283,7 @@ export const useGameStore = defineStore('game', {
 
           // Если срок кредита истек или долг полностью погашен, удаляем кредит
           if (liability.remainingMonths <= 0 || liability.remainingAmount <= 0) {
-            this.liabilities = this.liabilities.filter(l => l !== liability)
+            this.liabilities = this.liabilities.filter((l) => l !== liability)
           }
         }
       }
@@ -411,10 +409,7 @@ export const useGameStore = defineStore('game', {
     },
 
     //Начало новой игры
-    newGame(settings?: {
-      financialGoal?: number
-      totalMonths?: number
-    }): void {
+    newGame(settings?: { financialGoal?: number; totalMonths?: number }): void {
       this.$reset()
       this.gameId++
 

@@ -13,14 +13,13 @@ const startGame = () => {
 
 <template>
   <div class="money-emoji">💰</div>
-  <h1 class="game-title">Накопи на мечту!</h1>
+  <h1 class="game-title">Расплатись за Хавал!</h1>
   <p class="game-subtitle">Финансовый симулятор выживания</p>
 
   <div class="goal-section">
     <div class="goal-title">🎯 Цель игры</div>
     <p class="goal-text">
-      Накопить {{ game.financialGoal.toLocaleString() }} рублей за
-      {{ game.totalMonths.toLocaleString() }} месяцев
+      Погасить все долги за {{ game.totalMonths.toLocaleString() }} месяцев
     </p>
   </div>
 
