@@ -77,7 +77,7 @@ export interface EventCard {
   timestamp: string
 }
 
-export interface MonthlyReport {
+export interface MonthlyReportType {
   month: number
   income: number
   expenses: number
@@ -124,7 +124,7 @@ export interface GameSettings {
 //   liabilitiesValue: number
 // }
 
-type PositiveNumber = number
+//type PositiveNumber = number
 
 // State интерфейс для Pinia store
 export interface GameState {
@@ -144,7 +144,7 @@ export interface GameState {
   currentCard: EventCard | null
 
   eventHistory: EventCard[]
-  monthlyReports: MonthlyReport[]
+  monthlyReports: MonthlyReportType[]
 
   settings: GameSettings
 

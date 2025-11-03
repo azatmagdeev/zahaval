@@ -6,7 +6,7 @@ import type {
   Asset,
   Liability,
   EventCard,
-  MonthlyReport,
+  MonthlyReportType,
   JournalEntry,
   IncomeExpenseItem,
   ChartDataPoint,
@@ -15,6 +15,8 @@ import type {
 import { eventCards } from '@/data/eventCards.ts'
 import { initialState } from '@/data/initialGameState.ts'
 import { calculateMonthlyPayment } from '@/stores/calculatePayment.ts'
+import { usePopup } from '@/stores/popup.ts'
+import MonthlyReport from '@/MonthlyReport.vue'
 
 export const useGameStore = defineStore('game', {
   state: (): GameState =>
@@ -143,7 +145,7 @@ export const useGameStore = defineStore('game', {
         },
       ]
 
-      state.monthlyReports.forEach((report: MonthlyReport) => {
+      state.monthlyReports.forEach((report: MonthlyReportType) => {
         data.push({
           month: report.month,
           netWorth: report.netWorth,
@@ -168,7 +170,7 @@ export const useGameStore = defineStore('game', {
       const entries: JournalEntry[] = []
 
       // Добавляем месячные отчеты
-      state.monthlyReports.forEach((report: MonthlyReport) => {
+      state.monthlyReports.forEach((report: MonthlyReportType) => {
         entries.push({
           type: 'monthly_report',
           month: report.month,
@@ -244,7 +246,7 @@ export const useGameStore = defineStore('game', {
       }
 
       // Создание отчета за месяц
-      const monthlyReport: MonthlyReport = {
+      const monthlyReport: MonthlyReportType = {
         month: this.currentMonth,
         income: this.totalAssetIncome,
         expenses: this.totalLiabilityExpenses,
@@ -255,6 +257,8 @@ export const useGameStore = defineStore('game', {
         liabilitiesValue: this.totalLiabilitiesValue,
         timestamp: new Date().toISOString(),
       }
+
+      usePopup().setContent(MonthlyReport)
 
       this.monthlyReports.push(monthlyReport)
       this.currentMonth++
