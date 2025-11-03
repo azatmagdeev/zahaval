@@ -1,11 +1,12 @@
 <script setup lang="ts">
 import { useGameStore } from '@/stores/game.ts'
+import { initialState } from '@/data/initialGameState.ts'
 
 const game = useGameStore()
 const startGame = () => {
   game.newGame({
-    financialGoal: 0,
-    totalMonths: 60,
+    financialGoal: initialState.financialGoal,
+    totalMonths: initialState.totalMonths,
   })
   game.nextMove()
 }

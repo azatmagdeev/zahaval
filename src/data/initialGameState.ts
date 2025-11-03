@@ -1,7 +1,7 @@
 import type { Asset, Liability } from '@/stores/types.ts'
 
 export const initialState = {
-  totalMonths: 60,
+  totalMonths: 36,
   financialGoal: 0, //избавиться от долгов
   assets: [
     {

@@ -12,7 +12,13 @@ import type {
   ChartDataPoint,
   CardAction,
 } from './types.ts'
-import { eventCards } from '@/data/eventCards.ts'
+import {
+  eventCards,
+  expenseDescriptions,
+  getRandomAmount,
+  getRandomItem,
+  incomeDescriptions,
+} from '@/data/eventCards.ts'
 import { initialState } from '@/data/initialGameState.ts'
 import { calculateMonthlyPayment } from '@/stores/calculatePayment.ts'
 import { usePopup } from '@/stores/popup.ts'
@@ -305,18 +311,21 @@ export const useGameStore = defineStore('game', {
     },
 
     // Генерация карточки события
+    // В stores/gameStore.js обновите функцию generateEventCard
     generateEventCard(): void {
       const availableCards = this.availableEventCards
 
       // Выбираем случайную карточку из доступных (кроме предыдущей)
       const randomIndex = Math.floor(Math.random() * availableCards.length)
-      const selectedCard = availableCards[randomIndex]
+      const selectedCardTemplate = availableCards[randomIndex]
 
-      if (!selectedCard) {
+      if (!selectedCardTemplate) {
         // Если по какой-то причине нет доступных карточек, берем любую
         const fallbackIndex = Math.floor(Math.random() * eventCards.length)
-        const fallbackCard = eventCards[fallbackIndex]
-        if (!fallbackCard) throw new Error('не удалось подобрать карточку')
+        const fallbackCardTemplate = eventCards[fallbackIndex]
+        if (!fallbackCardTemplate) throw new Error('не удалось подобрать карточку')
+
+        const fallbackCard = this.createRandomizedCard(fallbackCardTemplate)
         this.currentCard = {
           ...fallbackCard,
           cardId: Date.now(),
@@ -325,6 +334,7 @@ export const useGameStore = defineStore('game', {
         return
       }
 
+      const selectedCard = this.createRandomizedCard(selectedCardTemplate)
       this.currentCard = {
         ...selectedCard,
         cardId: Date.now(),
@@ -332,6 +342,22 @@ export const useGameStore = defineStore('game', {
 
       // Сохраняем ID текущей карточки как предыдущую для следующего хода
       this.previousCardId = selectedCard.id
+    },
+
+    // Новая функция для создания карточки со случайными данными
+    createRandomizedCard(cardTemplate: Partial<EventCard>): Partial<EventCard> {
+      const card = { ...cardTemplate }
+
+      // Заполняем случайными данными в зависимости от типа карточки
+      if (card.type === 'windfall') {
+        card.description = getRandomItem(incomeDescriptions)
+        card.gain = getRandomAmount()
+      } else if (card.type === 'emergency_expense') {
+        card.description = getRandomItem(expenseDescriptions)
+        card.cost = getRandomAmount()
+      }
+
+      return card
     },
 
     // Обработка действий с карточкой
