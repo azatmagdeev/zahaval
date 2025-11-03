@@ -23,7 +23,7 @@ const renderContent = () => {
 
 
 // Close on ESC key
-const handleKeydown = (event) => {
+const handleKeydown = (event:KeyboardEvent) => {
   if (event.key === 'Escape' && popup.isOpen) {
     popup.close()
   }

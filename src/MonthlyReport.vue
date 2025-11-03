@@ -13,7 +13,7 @@ const closePopup = () => {
 </script>
 
 <template>
-  <div class="report">
+  <div class="report" v-if="monthlyReport">
     <h2 class="report-title">Отчет за месяц</h2>
 
     <div class="report-item">
