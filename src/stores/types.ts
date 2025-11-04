@@ -50,6 +50,7 @@ export interface Asset {
 export interface Liability {
   id: number
   name: string
+  expenseName?: string
   type: LiabilityType
   monthlyExpense: number
   remainingAmount: number

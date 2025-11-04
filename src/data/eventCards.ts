@@ -58,13 +58,7 @@ export const eventCards: Partial<EventCard>[] = [
 ]
 
 // Функция для получения случайной карточки события
-export const getRandomEventCard = (): Partial<EventCard> => {
-  const cardTemplate = eventCards[Math.floor(Math.random() * eventCards.length)]
-
-  if (!cardTemplate) {
-    throw new Error('No event cards available')
-  }
-
+export const getRandomEventCard = (cardTemplate?: Partial<EventCard>): Partial<EventCard> => {
   const card = { ...cardTemplate }
 
   // Заполняем случайными данными в зависимости от типа карточки

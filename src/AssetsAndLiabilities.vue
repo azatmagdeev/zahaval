@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { type Asset, type Liability } from '@/stores/types.ts'
 import { useGameStore } from '@/stores/game.ts'
+import LiabilityItem from './LiabilityItem.vue'
 
 const game = useGameStore()
 </script>
@@ -22,17 +23,10 @@ const game = useGameStore()
 
     <div class="liabilities-list">
       <template v-for="liability in game.liabilities as Liability[]" :key="liability.name">
-        <div class="list-row" v-if="!liability.hidden">
-          <span class="item-name">
-            {{ liability.name }}
-            <span v-if="liability.remainingMonths" class="months-badge">
-              ({{ liability.remainingMonths }})
-            </span>
-          </span>
-          <span class="item-value liability-value">
-            {{ liability.remainingAmount.toLocaleString() }}
-          </span>
-        </div>
+        <LiabilityItem
+          v-if="!liability.hidden"
+          :liability="liability"
+        />
       </template>
     </div>
   </div>
@@ -68,7 +62,8 @@ const game = useGameStore()
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
-.list-row {
+/* Стили для активов остаются здесь */
+.assets-list .list-row {
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -76,20 +71,12 @@ const game = useGameStore()
   margin: 0.25em 0;
   background: white;
   border-radius: 6px;
-  border-left: 4px solid transparent;
+  border-left: 4px solid #27ae60;
   transition: all 0.2s ease;
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
 }
 
-.assets-list .list-row {
-  border-left-color: #27ae60;
-}
-
-.liabilities-list .list-row {
-  border-left-color: #e74c3c;
-}
-
-.list-row:hover {
+.assets-list .list-row:hover {
   transform: translateY(-1px);
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
 }
@@ -102,22 +89,9 @@ const game = useGameStore()
   gap: 0.5em;
 }
 
-.months-badge {
-  background: #ffeaa7;
-  color: #e17055;
-  padding: 0.2em 0.6em;
-  border-radius: 12px;
-  font-size: 0.8em;
-  font-weight: 600;
-}
-
 .item-value {
   font-weight: 600;
   color: #27ae60;
-}
-
-.liability-value {
-  color: #e74c3c;
 }
 
 /* Адаптивность */
@@ -127,7 +101,7 @@ const game = useGameStore()
     padding: 0 1em;
   }
 
-  .list-row {
+  .assets-list .list-row {
     padding: 0.6em 0.8em;
     flex-direction: column;
     align-items: flex-start;
@@ -141,7 +115,7 @@ const game = useGameStore()
 }
 
 /* Анимации */
-.list-row {
+.assets-list .list-row {
   animation: fadeInUp 0.3s ease;
 }
 
@@ -173,18 +147,13 @@ const game = useGameStore()
     background: #343a40;
   }
 
-  .list-row {
+  .assets-list .list-row {
     background: #495057;
     color: #f8f9fa;
   }
 
   .item-name {
     color: #f8f9fa;
-  }
-
-  .months-badge {
-    background: #ffd43b;
-    color: #495057;
   }
 }
 </style>

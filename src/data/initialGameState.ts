@@ -45,6 +45,7 @@ export const initialState = {
     {
       id: 2,
       name: 'Кредитная карта',
+      expenseName: 'Проценты по кредитке',
       type: 'credit_card',
       monthlyExpense: 0,
       remainingAmount: 0,
@@ -53,6 +54,7 @@ export const initialState = {
     {
       id: 3,
       name: 'Автокредит',
+      expenseName: 'Платёж по автокредиту',
       type: 'car_loan',
       remainingAmount: 2372000,
       interestRate: 14.2,
@@ -61,6 +63,7 @@ export const initialState = {
     {
       id: 4,
       name: 'Ипотека',
+      expenseName: 'Платёж по ипотеке',
       type: 'mortgage',
       remainingAmount: 115000,
       interestRate: 8.64,

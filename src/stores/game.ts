@@ -12,13 +12,7 @@ import type {
   ChartDataPoint,
   CardAction,
 } from './types.ts'
-import {
-  eventCards,
-  expenseDescriptions,
-  getRandomAmount,
-  getRandomItem,
-  incomeDescriptions,
-} from '@/data/eventCards.ts'
+import { eventCards, getRandomEventCard } from '@/data/eventCards.ts'
 import { initialState } from '@/data/initialGameState.ts'
 import { calculateMonthlyPayment } from '@/stores/calculatePayment.ts'
 import { usePopup } from '@/stores/popup.ts'
@@ -135,7 +129,7 @@ export const useGameStore = defineStore('game', {
         }
 
         return {
-          name: liability.name,
+          name: liability.expenseName || liability.name,
           amount: liability.monthlyExpense,
           type: 'liability',
         }
@@ -325,7 +319,7 @@ export const useGameStore = defineStore('game', {
         const fallbackCardTemplate = eventCards[fallbackIndex]
         if (!fallbackCardTemplate) throw new Error('не удалось подобрать карточку')
 
-        const fallbackCard = this.createRandomizedCard(fallbackCardTemplate)
+        const fallbackCard = getRandomEventCard()
         this.currentCard = {
           ...fallbackCard,
           cardId: Date.now(),
@@ -334,7 +328,7 @@ export const useGameStore = defineStore('game', {
         return
       }
 
-      const selectedCard = this.createRandomizedCard(selectedCardTemplate)
+      const selectedCard = getRandomEventCard(selectedCardTemplate)
       this.currentCard = {
         ...selectedCard,
         cardId: Date.now(),
@@ -342,22 +336,6 @@ export const useGameStore = defineStore('game', {
 
       // Сохраняем ID текущей карточки как предыдущую для следующего хода
       this.previousCardId = selectedCard.id
-    },
-
-    // Новая функция для создания карточки со случайными данными
-    createRandomizedCard(cardTemplate: Partial<EventCard>): Partial<EventCard> {
-      const card = { ...cardTemplate }
-
-      // Заполняем случайными данными в зависимости от типа карточки
-      if (card.type === 'windfall') {
-        card.description = getRandomItem(incomeDescriptions)
-        card.gain = getRandomAmount()
-      } else if (card.type === 'emergency_expense') {
-        card.description = getRandomItem(expenseDescriptions)
-        card.cost = getRandomAmount()
-      }
-
-      return card
     },
 
     // Обработка действий с карточкой
